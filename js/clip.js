@@ -50,25 +50,15 @@ class Clip{
             this.addEventListener('mousemove',move);
         };
         function move(e2){
-            t.currentControl = t._getCurrentControlPoint(t.mx, t.my);
+            // t.currentControl = t._getCurrentControlPoint(t.mx, t.my);
 
             let e22 = e2 || event;
             t.mx = e22.clientX - t.canvas.offsetLeft;
             t.my = e22.clientY - t.canvas.offsetTop;
-            console.log(t.mx - t.pmx,t.my - t.pmy);
             // t._moveImage(t.mx - t.pmx,t.my - t.pmy );
 
             t.ctx.clearRect(0,0,t.cw,t.ch);
-
             t._moveImage(0,0);
-            // t._redrawShape({
-            //     x0: t.pmx,
-            //     y0: t.pmy,
-            //     x1: t.mx,
-            //     x2: t.my,
-            //     _x: t.mx - t.pmx,
-            //     _y: t.my - t.pmy,
-            // });
 
             if(t.event.move instanceof Function){
                 t.event.move(t.currentControl);
@@ -142,7 +132,7 @@ class Clip{
         cps.forEach((cp)=>{
             let cpcoords = cp.coords;
             let i,polySides =cpcoords.length, j = polySides - 1,
-                oddNodes = false     ;
+                oddNodes = false;
             let polyX,polyY,polyXj,polyYj;
             for (i = 0;i < polySides; i++) {
                 polyX = cpcoords[i][0];
@@ -151,21 +141,21 @@ class Clip{
                 polyYj = cpcoords[j][1];
                 if((polyY< y && polyYj>=y || polyYj<y && polyY>=y) && (polyX<=x || polyXj<=x)) {
                     oddNodes ^= (polyX+(y-polyY)/(polyYj-polyY)*(polyXj-polyX)<x);
-                    if(oddNodes){
-                        if(!tempCp){
-                            tempCp = cp;
-                        }
-                        if(tempCp.index <= cp.index){
-                            tempCp = cp;
-                        }
-                    }
                 }
                 j=i;
             }
+            if(oddNodes){
+                if(!tempCp){
+                    tempCp = cp;
+                }
+                if(tempCp.index <= cp.index){
+                    tempCp = cp;
+                }
+            }
         });
-        console.log(tempCp);
         return tempCp;
     }
+
 }
 let clip = new Clip();
 clip.setShape(new Rectangle());
