@@ -11,7 +11,6 @@ class Rectangle extends Shape{
     }
 
     move(control,obj){
-        console.log(control);
         let type = control.type,
             index = control.index;
         if('move' === type){
@@ -19,7 +18,6 @@ class Rectangle extends Shape{
         }else if('drag' === type){
             this.drag(obj,index);
         }
-
     }
 
     redraw(obj){
@@ -28,9 +26,7 @@ class Rectangle extends Shape{
         for(let i = 0, len = c.length; i < len; i++){
             c[i][0] += x;
             c[i][1] += y;
-            console.log(this.coords);
         }
-
 
         let cps = this.controlPoints;
         cps.forEach((cp)=>{
@@ -39,7 +35,6 @@ class Rectangle extends Shape{
                 c[1] += y;
             })
         });
-        // this.draw();
     }
 
     drag(obj,index){

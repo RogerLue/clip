@@ -183,12 +183,11 @@ class Clip{
         }
         this.clipMark = false;
         this.ctx.clearRect(0,0,this.cw,this.ch);
-        this.shape.draw();
+        let coords = this._clipDraw();
         this.ctx.save();
         this.ctx.clip();
         this.ctx.drawImage(this.img,0,0);
 
-        let coords = this.shape.getCoords();
         let w = coords[1][0] - coords[0][0],h = coords[3][1] - coords[0][1];
         let im = this.ctx.getImageData(coords[0][0],coords[0][1],w,h);
 
@@ -201,6 +200,18 @@ class Clip{
         this.clipImage = canvas.toDataURL("image/png");
         return this.clipImage;
 
+    }
+    _clipDraw(){
+        let c = this.shape.getCoords(),
+            ctx = this.ctx;
+        ctx.strokeStyle = 'rgba(0,0,0,0)';
+        ctx.beginPath();
+        for(let i = 0, len = c.length; i < len; i++){
+            ctx.lineTo(c[i][0],c[i][1]);
+        }
+        ctx.closePath();
+        ctx.stroke();
+        return c;
     }
 }
 let clip = new Clip();
