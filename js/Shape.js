@@ -6,6 +6,7 @@ class Shape{
         this.controlPoints = [];
         this.strokeStyle = 'rgb(250,55,50)';
         this.fillStyle = 'rgba(250,255,255,0.3)';
+        this.lineDash = [];
         this.clip = undefined;
     }
 
@@ -24,6 +25,10 @@ class Shape{
             ctx = this.ctx;
         ctx.strokeStyle = this.strokeStyle;
         ctx.fillStyle = this.fillStyle;
+        ctx.save();
+        if(this.lineDash.length === 2){
+            ctx.setLineDash(this.lineDash);
+        }
         ctx.beginPath();
         for(let i = 0, len = c.length; i < len; i++){
             ctx.lineTo(c[i][0],c[i][1]);
@@ -39,6 +44,7 @@ class Shape{
         cps.forEach((cp)=>{
             ctx.strokeStyle = this.strokeStyle;
             ctx.fillStyle = this.fillStyle;
+            ctx.restore();
             ctx.beginPath();
             let c = cp.coords;
             for(let i = 0, len = c.length; i < len; i++){

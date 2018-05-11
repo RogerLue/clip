@@ -6,6 +6,7 @@ class Rectangle extends Shape{
         this.w = 5;
         this.cursor = ['nw-resize','n-resize','ne-resize','e-resize',
             'se-resize','s-resize','sw-resize','w-resize','move'];
+        this.lineDash = [5,10];
         this.controlPoints = this._calControlPoint();
     }
 
