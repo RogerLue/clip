@@ -26,6 +26,8 @@ class Clip{
             move : undefined,
         };
 
+        this.clipMark = true;
+
         this._loadImage();
         this._event();
     }
@@ -45,13 +47,20 @@ class Clip{
 
             t.pmx = t.mx;
             t.pmy = t.my;
-            console.log(t.mx,t.my)
             t.currentControl = t._getCurrentControlPoint(t.mx, t.my);
-            this.addEventListener('mousemove',move);
-        };
-        function move(e2){
-            // t.currentControl = t._getCurrentControlPoint(t.mx, t.my);
 
+        };
+        this.canvas.addEventListener('mousemove',move);
+        function move(e2){
+            if(!t.clipMark){
+                return;
+            }
+            t.moveoverControl = t._getCurrentControlPoint(t.mx, t.my);
+            if(t.moveoverControl){
+                t.canvas.style.cursor = t.moveoverControl.cursor;
+            }else{
+                t.canvas.style.cursor = 'default';
+            }
             let e22 = e2 || event;
             t.mx = e22.clientX - t.canvas.offsetLeft;
             t.my = e22.clientY - t.canvas.offsetTop;
@@ -73,15 +82,14 @@ class Clip{
                     _y: t.my - t.pmy,
                 });
             }
-            t.shape.draw();
-
+            t._draw();
             t.pmx = t.mx;
             t.pmy = t.my;
             // console.log(t.mx,t.my);
         }
         this.canvas.onmouseup = function(){
-            // console.log(11);
-            t.canvas.removeEventListener('mousemove',move);
+            // t.canvas.removeEventListener('mousemove',move);
+            t.currentControl = undefined;
         }
 
     }
@@ -155,7 +163,47 @@ class Clip{
         });
         return tempCp;
     }
+    _draw(){
+        this.shape.draw();
+        this.shape.drawControl();
+    }
+    reClip(){
+        this.clipMark = true;
+        this.ctx.restore();
+        this.ctx.drawImage(this.img,0,0);
+        this._draw();
+    }
 
+    save(){
+        this.clipMark = false;
+        this.ctx.clearRect(0,0,this.cw,this.ch);
+        this.shape.draw();
+        this.ctx.save();
+        this.ctx.clip();
+        this.ctx.drawImage(this.img,0,0);
+
+        let coords = this.shape.getCoords();
+        let w = coords[1][0] - coords[0][0],h = coords[3][1] - coords[0][1];
+        let im = this.ctx.getImageData(coords[0][0],coords[0][1],w,h);
+
+        let canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        let context = canvas.getContext('2d');
+        // document.body.appendChild(canvas)
+        context.putImageData(im,0,0,0,0,w,h);
+
+        return canvas.toDataURL("image/png");
+
+    }
 }
 let clip = new Clip();
 clip.setShape(new Rectangle());
+document.querySelector('#clip').onclick = function(){
+        let w = clip.save();
+        document.querySelector('#tm').src = w;
+        console.log(w);
+};
+document.querySelector('#reclip').onclick = function(){
+    clip.reClip();
+};

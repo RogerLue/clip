@@ -6,6 +6,7 @@ class Shape{
         this.controlPoints = [];
         this.strokeStyle = 'rgb(250,55,50)';
         this.fillStyle = 'rgba(250,255,255,0.3)';
+        this.clip = undefined;
     }
 
     setCtx(ctx){
@@ -15,7 +16,9 @@ class Shape{
     getControlPoints(){
         return this.controlPoints;
     }
-
+    getCoords(){
+        return this.coords;
+    }
     draw(){
         let c = this.coords,
             ctx = this.ctx;
@@ -28,14 +31,11 @@ class Shape{
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
-
-        this.drawControl();
     }
 
     drawControl(){
         let cps = this.controlPoints,
             ctx = this.ctx;
-        console.log(cps);
         cps.forEach((cp)=>{
             ctx.strokeStyle = this.strokeStyle;
             ctx.fillStyle = this.fillStyle;

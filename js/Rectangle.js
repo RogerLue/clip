@@ -4,8 +4,9 @@ class Rectangle extends Shape{
         super();
         this.coords = [[10,10],[110,10],[110,110],[10,110]];
         this.w = 5;
+        this.cursor = ['nw-resize','n-resize','ne-resize','e-resize',
+            'se-resize','s-resize','sw-resize','w-resize','move'];
         this.controlPoints = this._calControlPoint();
-
     }
 
     move(control,obj){
@@ -80,7 +81,9 @@ class Rectangle extends Shape{
             cp = [],
             type='drag',
             w = this.w,
-            p1,p2,n1,n2,m1,m2,ni;
+            p1,p2,n1,n2,m1,m2,ni,
+            cursor = this.cursor
+        ;
 
         for(let i = 0, len = c.length; i < len; i++){
             p1 = c[i][0];
@@ -91,21 +94,34 @@ class Rectangle extends Shape{
             m1 = p1 === n1 ? p1 : (p1+n1)/2;
             m2 = p2 === n2 ? p2 : (p2+n2)/2;
             cp.push({
-                index: 2*i,
-                coords:[
-                  [p1-w,p2-w],[p1+w,p2-w],[p1+w,p2+w],[p1-w,p2+w]
-                ],
-                type: type,
-            },
-            {
-                index:2*i+1,
-                coords:[
-                    [m1-w,m2-w],[m1+w,m2-w],[m1+w,m2+w],[m1-w,m2+w]
-                ],
-                type: type,
-            }
+                    index: 2*i,
+                    coords:[
+                      [p1-w,p2-w],[p1+w,p2-w],[p1+w,p2+w],[p1-w,p2+w]
+                    ],
+                    type: type,
+                    cursor: cursor[2*i],
+                },
+                {
+                    index:2*i+1,
+                    coords:[
+                        [m1-w,m2-w],[m1+w,m2-w],[m1+w,m2+w],[m1-w,m2+w]
+                    ],
+                    type: type,
+                    cursor: cursor[2*i+1],
+                }
             )
         }
+
+        let x0 = (c[0][0]+c[1][0]) / 2,
+            y0 = (c[0][1]+c[3][1]) / 2;
+        cp.push({
+            index: 8,
+            coords:[
+              [x0-w,y0-w],[x0+w,y0-w],[x0+w,y0+w],[x0-w,y0+w]
+            ],
+            type:'move',
+            cursor: cursor[8],
+        })
         return cp;
     }
 
