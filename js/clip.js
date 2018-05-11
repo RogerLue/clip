@@ -168,6 +168,9 @@ class Clip{
         this.shape.drawControl();
     }
     reClip(){
+        if(this.clipMark){
+            return;
+        }
         this.clipMark = true;
         this.ctx.restore();
         this.ctx.drawImage(this.img,0,0);
@@ -175,6 +178,9 @@ class Clip{
     }
 
     save(){
+        if(!this.clipMark){
+            return this.clipImage;
+        }
         this.clipMark = false;
         this.ctx.clearRect(0,0,this.cw,this.ch);
         this.shape.draw();
@@ -192,8 +198,8 @@ class Clip{
         let context = canvas.getContext('2d');
         // document.body.appendChild(canvas)
         context.putImageData(im,0,0,0,0,w,h);
-
-        return canvas.toDataURL("image/png");
+        this.clipImage = canvas.toDataURL("image/png");
+        return this.clipImage;
 
     }
 }
