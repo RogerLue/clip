@@ -21,4 +21,19 @@
 <script src="js/Shape.js"></script>
 <script src="js/Rectangle.js"></script>
 <script src="js/clip.js"></script>
+
+<script>
+    let clip = new Clip({
+        imgURL: 'girl.jpg'
+    });
+    clip.setShape(new Rectangle());
+    document.querySelector('#clip').onclick = function(){
+        let w = clip.save();
+        document.querySelector('#tm').src = w;
+        console.log(w);
+    };
+    document.querySelector('#reclip').onclick = function(){
+        clip.reClip();
+    };
+</script>
 </html>

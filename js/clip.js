@@ -1,7 +1,8 @@
 
 class Clip{
 
-    constructor(){
+    constructor(params){
+        this.params = params;
         this.img = new Image();
         this.canvas = document.querySelector('#canvas');
         this.ctx = this.canvas.getContext('2d');
@@ -105,7 +106,7 @@ class Clip{
             //添加裁剪图形
             t.shape && t.shape.draw();
         };
-        this.img.src = 'girl.jpg';
+        this.img.src = this.params.imgURL;
     }
 
     /**
@@ -183,11 +184,14 @@ class Clip{
         }
         this.clipMark = false;
         this.ctx.clearRect(0,0,this.cw,this.ch);
-        let coords = this._clipDraw();
         this.ctx.save();
+        let coords = this._clipDraw();
         this.ctx.clip();
         this.ctx.drawImage(this.img,0,0);
 
+        //求最大外接矩形
+        //....
+        //
         let w = coords[1][0] - coords[0][0],h = coords[3][1] - coords[0][1];
         let im = this.ctx.getImageData(coords[0][0],coords[0][1],w,h);
 
@@ -214,13 +218,3 @@ class Clip{
         return c;
     }
 }
-let clip = new Clip();
-clip.setShape(new Rectangle());
-document.querySelector('#clip').onclick = function(){
-        let w = clip.save();
-        document.querySelector('#tm').src = w;
-        console.log(w);
-};
-document.querySelector('#reclip').onclick = function(){
-    clip.reClip();
-};
